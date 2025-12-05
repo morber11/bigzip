@@ -1,0 +1,171 @@
+<Window
+    x:Class="BigZipUI.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:BigZipUI.ViewModels"
+    xmlns:converters="using:BigZipUI.Converters"
+    Title="BigZip UI"
+    Width="600"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainWindowViewModel"
+    CanResize="False"
+    Icon="avares://ui/Assets/favicon.ico"
+    SizeToContent="Height"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+    </Window.Resources>
+
+    <Window.Styles>
+        <Style Selector="Border.drag-over">
+            <Setter Property="BorderBrush" Value="Blue" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Background" Value="#E8F4FD" />
+        </Style>
+    </Window.Styles>
+
+    <StackPanel
+        Margin="20"
+        VerticalAlignment="Top"
+        Spacing="8">
+        <TextBlock
+            Margin="0,0,0,12"
+            HorizontalAlignment="Center"
+            FontSize="18"
+            FontWeight="Bold"
+            Text="BigZip File Inflator" />
+
+        <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto,8,Auto,8,Auto,8,Auto,8,Auto">
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="0,0,10,0"
+                VerticalAlignment="Center"
+                Text="Input File:" />
+            <Border
+                x:Name="InputBorder"
+                Grid.Row="0"
+                Grid.Column="1"
+                Background="Transparent"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="2">
+                <TextBox
+                    x:Name="InputTextBox"
+                    MinWidth="300"
+                    HorizontalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Text="{Binding InputPath, Mode=TwoWay}" />
+            </Border>
+            <Button
+                Grid.Row="0"
+                Grid.Column="2"
+                Margin="6,0,0,0"
+                Command="{Binding BrowseInputCommand}"
+                Content="..." />
+
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="0,0,10,0"
+                VerticalAlignment="Center"
+                Text="Output File:" />
+            <Border
+                x:Name="OutputBorder"
+                Grid.Row="2"
+                Grid.Column="1"
+                Background="Transparent"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                CornerRadius="2">
+                <TextBox
+                    x:Name="OutputTextBox"
+                    MinWidth="300"
+                    HorizontalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Text="{Binding OutputPath, Mode=TwoWay}" />
+            </Border>
+            <Button
+                Grid.Row="2"
+                Grid.Column="2"
+                Margin="6,0,0,0"
+                Command="{Binding BrowseOutputCommand}"
+                Content="..." />
+
+            <StackPanel
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                MaxWidth="460"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal"
+                Spacing="8">
+                <TextBlock
+                    Margin="0,4,6,0"
+                    VerticalAlignment="Center"
+                    Text="Size:" />
+                <ComboBox
+                    x:Name="SizeComboBox"
+                    Width="150"
+                    IsEnabled="{Binding ModeEnabled}"
+                    SelectedIndex="{Binding SelectedSizeIndex, Mode=TwoWay}">
+                    <ComboBoxItem>Small</ComboBoxItem>
+                    <ComboBoxItem>Medium</ComboBoxItem>
+                    <ComboBoxItem>Large</ComboBoxItem>
+                    <ComboBoxItem>Very Large</ComboBoxItem>
+                    <ComboBoxItem>Extreme</ComboBoxItem>
+                </ComboBox>
+
+                <TextBlock
+                    Margin="12,4,6,0"
+                    VerticalAlignment="Center"
+                    Text="Mode:" />
+                <ComboBox
+                    x:Name="ModeComboBox"
+                    Width="120"
+                    IsEnabled="{Binding ModeEnabled}"
+                    SelectedIndex="{Binding SelectedModeIndex, Mode=TwoWay}">
+                    <ComboBoxItem>Repeat</ComboBoxItem>
+                    <ComboBoxItem>Zero</ComboBoxItem>
+                    <ComboBoxItem>Random</ComboBoxItem>
+                </ComboBox>
+
+                <CheckBox
+                    x:Name="UnbigzipCheckBox"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Content="Unbigzip"
+                    IsChecked="{Binding Unbigzip, Mode=TwoWay}" />
+            </StackPanel>
+
+            <Button
+                x:Name="RunButton"
+                Grid.Row="6"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="0,16,0,0"
+                HorizontalAlignment="Center"
+                Command="{Binding RunCommand}"
+                Content="{Binding RunButtonText}" />
+        </Grid>
+
+        <ProgressBar
+            Height="6"
+            Margin="0,10,0,0"
+            Opacity="{Binding ProgressVisible, Converter={StaticResource BoolToOpacityConverter}}"
+            Maximum="100"
+            Value="{Binding Progress}" />
+
+        <TextBlock
+            x:Name="StatusTextBlock"
+            HorizontalAlignment="Center"
+            Foreground="Green"
+            Text="" />
+    </StackPanel>
+</Window>

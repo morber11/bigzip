@@ -1,0 +1,26 @@
+<Window
+    x:Class="BigZipUI.Dialogs.ErrorDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Error"
+    Width="300"
+    Height="150"
+    CanResize="False"
+    WindowStartupLocation="CenterOwner"
+    Icon="avares://ui/Assets/favicon.ico">
+
+    <StackPanel Margin="20" Spacing="12">
+        <TextBlock
+            x:Name="MessageTextBlock"
+            TextWrapping="Wrap"
+            TextAlignment="Center" />
+
+        <Button
+            x:Name="OkButton"
+            HorizontalAlignment="Center"
+            Content="OK"
+            IsDefault="True"
+            IsCancel="True"
+            MinWidth="80" />
+    </StackPanel>
+</Window>

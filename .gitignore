@@ -1,0 +1,75 @@
+bin/
+dist/
+obj/
+out/
+*.tmp
+*.log
+*.bak
+**/.DS_Store
+/.dtbcachev2
+/DesignTimeBuild
+/FileContextIndex
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Code coverage profiles and other test artifacts
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# Go workspace file
+go.work
+go.work.sum
+
+# env file
+.env
+
+# Editor/IDE
+.idea/
+.vscode/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# File index folders (different spellings / tools)
+/FileContentIndex
+/FileContentIndex/
+/FileContextIndex
+/FileContextIndex/
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/contentModel.xml
+/modules.xml
+/projectSettingsUpdater.xml
+/.idea.bigzip.iml
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+ui/.idea/.idea.bigzip/.idea/.name
+ui/.idea/.idea.bigzip/.idea/encodings.xml
+ui/.idea/.idea.bigzip/.idea/indexLayout.xml
+ui/.idea/.idea.bigzip/.idea/projectSettingsUpdater.xml
+.gitignore
+ui/.idea/.idea.bigzip/.idea/workspace.xml
+ui/.idea/.idea.bigzip/.idea/vcs.xml
