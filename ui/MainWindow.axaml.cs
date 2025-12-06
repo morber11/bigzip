@@ -7,6 +7,7 @@ using BigZipUI.ViewModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ui.Dialogs;
 
 namespace BigZipUI;
 

@@ -4,7 +4,7 @@ using Avalonia.Media;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace BigZipUI
+namespace ui.Dialogs
 {
     public class ResultDialog : Window
     {
@@ -70,7 +70,7 @@ namespace BigZipUI
                 {
                     try
                     {
-                        var top = TopLevel.GetTopLevel(this);
+                        var top = GetTopLevel(this);
                         var clipboard = top?.Clipboard;
                         if (clipboard is not null)
                         {
