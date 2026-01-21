@@ -158,6 +158,7 @@ func run(cfg *config) error {
 	// remaining space to reach desired total
 	remaining := desiredTotal - (int64(24) + int64(len(inData)))
 
+	// TODO: should move the similar calls and errors to a seperate function later that has one err check
 	switch m {
 	case "repeat":
 		if err := writeRepeat(outFile, inData, remaining); err != nil {
