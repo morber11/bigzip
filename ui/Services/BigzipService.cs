@@ -19,7 +19,10 @@ namespace BigZipUI.Services
         {
             var exePath = ResolveExecutablePath();
             if (exePath is null)
+            {
                 return (-1, string.Empty, CLI_EXECUTABLE_NAME + " not found");
+            }
+
 
             progress?.Report(PROGRESS_INIT);
 
@@ -33,7 +36,9 @@ namespace BigZipUI.Services
             };
 
             if (opt.Unbigzip)
+            {
                 startInfo.ArgumentList.Add("-uz");
+            }
 
             startInfo.ArgumentList.Add("-i");
             startInfo.ArgumentList.Add(opt.InputPath);
@@ -61,7 +66,9 @@ namespace BigZipUI.Services
 
             using var process = Process.Start(startInfo);
             if (process is null)
+            {
                 return (-1, string.Empty, "Failed to start process");
+            }
 
             progress?.Report(PROGRESS_PROCESS_STARTED);
 
