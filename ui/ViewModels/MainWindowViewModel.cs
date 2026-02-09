@@ -95,7 +95,7 @@ namespace BigZipUI.ViewModels
             var previous = _lastInputPath;
             var isBigzip = IsBigzip(value);
 
-            var prevAutoBigzip = previous + BIGZIP_EXTENSION; 
+            var prevAutoBigzip = previous + BIGZIP_EXTENSION;
             var prevAutoUnbig = Path.ChangeExtension(previous, null) ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(OutputPath) ||
@@ -144,7 +144,11 @@ namespace BigZipUI.ViewModels
 
         private async Task BrowseInputAsync()
         {
-            if (_openPicker is null) return;
+            if (_openPicker is null)
+            {
+                return;
+            }
+
             try
             {
                 var path = await _openPicker();
@@ -161,7 +165,10 @@ namespace BigZipUI.ViewModels
 
         private async Task BrowseOutputAsync()
         {
-            if (_savePicker is null) return;
+            if (_savePicker is null) 
+            {
+                return;
+            }
             try
             {
                 var path = await _savePicker();
@@ -179,7 +186,10 @@ namespace BigZipUI.ViewModels
         private async Task ExecuteRunAsync()
         {
             var (isValid, forceOverwrite, outputExisted) = await ValidateInputsAsync();
-            if (!isValid) return;
+            if (!isValid)
+            {
+                return;
+            }
 
             var exePath = _service.ResolveExecutablePath();
             if (exePath is null)
