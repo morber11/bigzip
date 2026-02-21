@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace ui.Dialogs
 {
