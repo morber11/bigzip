@@ -6,7 +6,6 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using static BigZipUI.Constants;
 
 namespace BigZipUI.ViewModels
@@ -50,11 +49,7 @@ namespace BigZipUI.ViewModels
         private Func<bool, string, Task>? _showResultDialog;
 
         private readonly IBigzipService _service;
-        private readonly IAsyncRelayCommand _runCommand;
-        private readonly IAsyncRelayCommand _runOrCancelCommand;
         private CancellationTokenSource? _cts;
-        private readonly IAsyncRelayCommand _browseInputCommand;
-        private readonly IAsyncRelayCommand _browseOutputCommand;
 
         private string _lastInputPath = string.Empty;
 
@@ -69,11 +64,6 @@ namespace BigZipUI.ViewModels
             _showDialog = showDialog;
             _confirmDialog = confirmDialog;
             _showResultDialog = showResultDialog;
-
-            _runCommand = new AsyncRelayCommand(ExecuteRunAsync, CanRun);
-            _runOrCancelCommand = new AsyncRelayCommand(ExecuteRunOrCancelAsync);
-            _browseInputCommand = new AsyncRelayCommand(BrowseInputAsync);
-            _browseOutputCommand = new AsyncRelayCommand(BrowseOutputAsync);
         }
 
         public void SetDialogs(
@@ -113,9 +103,7 @@ namespace BigZipUI.ViewModels
 
         partial void OnIsRunningChanged(bool value)
         {
-            _runCommand.NotifyCanExecuteChanged();
-            _runOrCancelCommand.NotifyCanExecuteChanged();
-
+            RunCommand.NotifyCanExecuteChanged();
             OnPropertyChanged(nameof(RunButtonText));
         }
 
@@ -134,14 +122,11 @@ namespace BigZipUI.ViewModels
             }
         }
 
-        public ICommand RunCommand => _runOrCancelCommand;
-        public ICommand BrowseInputCommand => _browseInputCommand;
-        public ICommand BrowseOutputCommand => _browseOutputCommand;
-
         public string RunButtonText => IsRunning ? "Cancel" : "Run BigZip";
 
         private bool CanRun() => !IsRunning;
 
+        [RelayCommand]
         private async Task BrowseInputAsync()
         {
             if (_openPicker is null)
@@ -163,9 +148,10 @@ namespace BigZipUI.ViewModels
             }
         }
 
+        [RelayCommand]
         private async Task BrowseOutputAsync()
         {
-            if (_savePicker is null) 
+            if (_savePicker is null)
             {
                 return;
             }
@@ -250,7 +236,8 @@ namespace BigZipUI.ViewModels
             }
         }
 
-        private async Task ExecuteRunOrCancelAsync()
+        [RelayCommand]
+        private async Task RunAsync()
         {
             if (!IsRunning)
             {

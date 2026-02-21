@@ -39,8 +39,8 @@ namespace BigZipUI.Dialogs
 
             KeyDown += (s, e) =>
             {
-                if (e.Key == Avalonia.Input.Key.Enter || 
-                    e.Key == Avalonia.Input.Key.Return || 
+                if (e.Key == Avalonia.Input.Key.Enter ||
+                    e.Key == Avalonia.Input.Key.Return ||
                     e.Key == Avalonia.Input.Key.Escape)
                 {
                     Close();

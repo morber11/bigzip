@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using System;
 using System.Threading.Tasks;
 
 namespace BigZipUI.Dialogs
