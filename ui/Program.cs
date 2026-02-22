@@ -16,6 +16,7 @@ class Program
     {
         var services = new ServiceCollection();
         services.AddSingleton<IBigzipService, BigzipService>();
+        services.AddSingleton<IDispatcher, AvaloniaDispatcher>();
         services.AddTransient<MainWindowViewModel>();
 
         var serviceProvider = services.BuildServiceProvider();
