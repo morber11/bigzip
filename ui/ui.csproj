@@ -12,6 +12,11 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ui.Tests\**" />
+    <EmbeddedResource Remove="ui.Tests\**" />
+    <None Remove="ui.Tests\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.1.5" />
     <PackageReference Include="Avalonia.Desktop" Version="11.1.5" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.5" />

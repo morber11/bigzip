@@ -1,4 +1,3 @@
-using Avalonia.Threading;
 using BigZipUI.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,7 +9,13 @@ using static BigZipUI.Constants;
 
 namespace BigZipUI.ViewModels
 {
-    public partial class MainWindowViewModel : ObservableObject
+    public partial class MainWindowViewModel(IBigzipService service,
+        IDispatcher? dispatcher = null,
+        Func<Task<string?>>? openPicker = null,
+        Func<Task<string?>>? savePicker = null,
+        Func<string, Task>? showDialog = null,
+        Func<string, Task<bool>>? confirmDialog = null,
+        Func<bool, string, Task>? showResultDialog = null) : ObservableObject
     {
         [ObservableProperty]
         private string _inputPath = string.Empty;
@@ -42,29 +47,20 @@ namespace BigZipUI.ViewModels
         [ObservableProperty]
         private bool _progressVisible;
 
-        private Func<Task<string?>>? _openPicker;
-        private Func<Task<string?>>? _savePicker;
-        private Func<string, Task>? _showDialog;
-        private Func<string, Task<bool>>? _confirmDialog;
-        private Func<bool, string, Task>? _showResultDialog;
+        private Func<Task<string?>>? _openPicker = openPicker;
+        private Func<Task<string?>>? _savePicker = savePicker;
+        private Func<string, Task>? _showDialog = showDialog;
+        private Func<string, Task<bool>>? _confirmDialog = confirmDialog;
+        private Func<bool, string, Task>? _showResultDialog = showResultDialog;
 
-        private readonly IBigzipService _service;
+        private readonly IBigzipService _service = service;
+        private readonly IDispatcher _dispatcher = dispatcher ?? new AvaloniaDispatcher();
         private CancellationTokenSource? _cts;
 
         private string _lastInputPath = string.Empty;
 
         private static readonly string[] _factors = ["32", "64", "128", "256", "512"];
         private static readonly string[] _modes = ["repeat", "zero", "random"];
-
-        public MainWindowViewModel(IBigzipService service, Func<Task<string?>>? openPicker = null, Func<Task<string?>>? savePicker = null, Func<string, Task>? showDialog = null, Func<string, Task<bool>>? confirmDialog = null, Func<bool, string, Task>? showResultDialog = null)
-        {
-            _service = service;
-            _openPicker = openPicker;
-            _savePicker = savePicker;
-            _showDialog = showDialog;
-            _confirmDialog = confirmDialog;
-            _showResultDialog = showResultDialog;
-        }
 
         public void SetDialogs(
             Func<Task<string?>>? openPicker = null,
@@ -124,7 +120,6 @@ namespace BigZipUI.ViewModels
 
         public string RunButtonText => IsRunning ? "Cancel" : "Run BigZip";
 
-        private bool CanRun() => !IsRunning;
 
         [RelayCommand]
         private async Task BrowseInputAsync()
@@ -193,7 +188,7 @@ namespace BigZipUI.ViewModels
 
             var progress = new Progress<double>(value =>
             {
-                Dispatcher.UIThread.Post(() =>
+                _dispatcher.Post(() =>
                 {
                     Progress = value * 100;
                     if (value < PROGRESS_PROCESS_STARTED)
@@ -221,7 +216,7 @@ namespace BigZipUI.ViewModels
             }
             catch (OperationCanceledException)
             {
-                Dispatcher.UIThread.Post(() => StatusMessage = "Cancelled");
+                _dispatcher.Post(() => StatusMessage = "Cancelled");
                 return;
             }
             catch (Exception ex)
@@ -245,7 +240,7 @@ namespace BigZipUI.ViewModels
                 return;
             }
 
-            Dispatcher.UIThread.Post(() =>
+            _dispatcher.Post(() =>
             {
                 IsRunning = false;
                 ProgressVisible = false;
@@ -283,6 +278,8 @@ namespace BigZipUI.ViewModels
                 if (_confirmDialog is not null)
                 {
                     forceOverwrite = await _confirmDialog($"The file '{OutputPath}' already exists");
+                    if (!forceOverwrite)
+                        return (false, forceOverwrite, outputExisted);
                 }
                 else
                 {
@@ -296,7 +293,7 @@ namespace BigZipUI.ViewModels
 
         private void PrepareExecution()
         {
-            Dispatcher.UIThread.Post(() =>
+            _dispatcher.Post(() =>
             {
                 IsRunning = true;
                 ProgressVisible = true;
@@ -310,18 +307,15 @@ namespace BigZipUI.ViewModels
             Progress = 1.0;
             StatusMessage = "Success: " + result.StdOut.Trim();
 
-            if (_showDialog is not null)
-            {
-                string resultPath = ParseActualOutputPath(result.StdOut, Unbigzip);
+            string resultPath = ParseActualOutputPath(result.StdOut, Unbigzip);
 
-                if (_showResultDialog is not null)
-                {
-                    await _showResultDialog(true, resultPath);
-                }
-                else
-                {
-                    await _showDialog($"Finished: {resultPath}");
-                }
+            if (_showResultDialog is not null)
+            {
+                await _showResultDialog(true, resultPath);
+            }
+            else if (_showDialog is not null)
+            {
+                await _showDialog($"Finished: {resultPath}");
             }
         }
 
@@ -340,7 +334,7 @@ namespace BigZipUI.ViewModels
 
         private void ResetExecutionState()
         {
-            Dispatcher.UIThread.Post(() =>
+            _dispatcher.Post(() =>
             {
                 IsRunning = false;
                 ProgressVisible = false;
@@ -351,7 +345,7 @@ namespace BigZipUI.ViewModels
             _cts = null;
         }
 
-        private static bool IsBigzip(string? path)
+        internal static bool IsBigzip(string? path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -361,7 +355,7 @@ namespace BigZipUI.ViewModels
             return string.Equals(Path.GetExtension(path), BIGZIP_EXTENSION, StringComparison.OrdinalIgnoreCase);
         }
 
-        private static string ParseActualOutputPath(string stdOut, bool isUnbigzip)
+        internal static string ParseActualOutputPath(string stdOut, bool isUnbigzip)
         {
             var line = stdOut.Trim();
             if (isUnbigzip)
